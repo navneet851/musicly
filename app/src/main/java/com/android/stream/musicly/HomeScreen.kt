@@ -25,18 +25,20 @@ fun HomeScreen(categories : List<CategoryModel>, navController: NavController) {
             .padding(16.dp)
     ) {
         items(categories.size){index ->
-            CategoryListItem(categories[index], navController)
+            CategoryListItem(categories[index]){
+                navController.navigate("categorySongs/${index}")
+            }
         }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun CategoryListItem(category: CategoryModel, navController: NavController) {
+private fun CategoryListItem(category: CategoryModel, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .clickable {
-                navController.navigate("categorySongs")
+                onClick()
             },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally

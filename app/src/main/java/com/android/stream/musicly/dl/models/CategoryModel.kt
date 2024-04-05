@@ -3,7 +3,7 @@ package com.android.stream.musicly.dl.models
 data class CategoryModel(
     val name: String,
     val coverUri: String,
-    val songs : List<String>
+    val songs : List<SongModel>
 ){
     constructor() : this("", "", listOf())
 }

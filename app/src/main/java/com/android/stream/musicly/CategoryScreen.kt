@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.stream.musicly.dl.adapter.SongAdapter
 import com.android.stream.musicly.dl.models.CategoryModel
 import com.android.stream.musicly.dl.models.SongModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -30,7 +31,9 @@ import com.bumptech.glide.integration.compose.GlideImage
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CategoryScreen(category : CategoryModel) {
+fun CategoryScreen(category : List<CategoryModel>, songIndex : Int) {
+
+
     Column(
         modifier = Modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -39,14 +42,14 @@ fun CategoryScreen(category : CategoryModel) {
 //            modifier = Modifier.size(200.dp))
         GlideImage(
             modifier = Modifier.size(150.dp),
-            model = category.coverUri,
-            contentDescription ="",
+            model = category[songIndex].coverUri,
+            contentDescription = "",
         )
-        Text(text = category.name)
-
+        Text(text = category[songIndex].name)
+        val songList = SongAdapter().getSongs(category[songIndex].songs)
         LazyColumn {
-            items(category.songs.size){song ->
-                CategoryListItem(category.songs[song])
+            items(category[songIndex].songs.size){ song ->
+                CategoryListItem(category[songIndex].songs[song])
             }
         }
     }
@@ -55,7 +58,10 @@ fun CategoryScreen(category : CategoryModel) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CategoryListItem(categorySong : String) {
+fun CategoryListItem(categorySong : SongModel) {
+
+
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -71,19 +77,19 @@ fun CategoryListItem(categorySong : String) {
         ) {
             GlideImage(
                 modifier = Modifier.size(60.dp),
-                model = Icons.Default.AccountBox,
+                model = categorySong.imageUri,
                 contentScale = ContentScale.Crop,
                 contentDescription = ""
             )
             Column(modifier = Modifier.padding(start = 10.dp)) {
                 Text(
-                    text = categorySong,
+                    text = categorySong.title,
                     color = Color.White,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "fvfv",
+                    text = categorySong.singer,
                     color = Color.Gray,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold

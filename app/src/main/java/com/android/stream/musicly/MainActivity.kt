@@ -35,9 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.android.stream.musicly.dl.adapter.CategoryAdapter
 import com.android.stream.musicly.dl.models.CategoryModel
 import com.android.stream.musicly.ui.theme.MusiclyTheme
@@ -52,7 +54,8 @@ class MainActivity : ComponentActivity() {
         categoriesLiveData.observe(this) { categories ->
             setContent {
                 MusiclyTheme {
-                    // A surface container using the 'background' color from the theme
+                    // A surface container using the 'background' color from th
+                    // e theme
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
@@ -63,8 +66,15 @@ class MainActivity : ComponentActivity() {
                             composable("home"){
                                 HomeScreen(categories = categories, navController)
                             }
-                            composable("categorySongs"){
-                                CategoryScreen(category = categories[0])
+                            composable(
+                                route = "categorySongs/{songIndex}",
+                                arguments = listOf(
+                                    navArgument("songIndex"){
+                                        type = NavType.IntType
+                                    }
+                                )
+                            ){
+                                CategoryScreen(category = categories, it.arguments!!.getInt("songIndex"))
                             }
                         }
                     }
