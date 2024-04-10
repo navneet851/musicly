@@ -7,25 +7,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.android.stream.musicly.dl.models.CategoryModel
 import com.android.stream.musicly.dl.models.SongModel
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SongAdapter {
-    fun getSongs(songIds: List<String>): State<List<SongModel>> {
-        val songs = mutableStateOf(emptyList<SongModel>())
+    fun getSong(songId: String): LiveData<SongModel?> {
+        val livedata = MutableLiveData<SongModel?>()
+        FirebaseFirestore.getInstance().collection("songs")
+            .document(songId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                val song = documentSnapshot.toObject(SongModel::class.java)
+                livedata.value = song
+            }
+        return livedata
+    }
 
-        songIds.forEach { songId ->
-            FirebaseFirestore.getInstance().collection("songs")
-                .document(songId).get()
-                .addOnSuccessListener {
-                    val song = it.toObject(SongModel::class.java)
-                    if (song != null) {
-                        songs.value += song
-                    }
-                }.addOnFailureListener {
-                    Log.d("FirebaseError", it.localizedMessage!!)
-                }
-        }
-
-        return songs
+    fun getSongs(): LiveData<List<SongModel>> {
+        val livedata = MutableLiveData<List<SongModel>>()
+        FirebaseFirestore.getInstance().collection("songs")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val songs = querySnapshot.toObjects(SongModel::class.java)
+                livedata.value = songs
+            }
+        return livedata
     }
 }

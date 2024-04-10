@@ -1,5 +1,6 @@
 package com.android.stream.musicly
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,8 +32,12 @@ import com.bumptech.glide.integration.compose.GlideImage
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CategoryScreen(category : List<CategoryModel>, songIndex : Int) {
+fun CategoryScreen(songs : List<SongModel>, category : List<CategoryModel>, songIndex : Int) {
 
+    val selectedCategory = category[songIndex]
+    val categorySongs = songs.filter {
+        it.category == selectedCategory.name
+    }
 
     Column(
         modifier = Modifier.padding(16.dp),
@@ -42,14 +47,13 @@ fun CategoryScreen(category : List<CategoryModel>, songIndex : Int) {
 //            modifier = Modifier.size(200.dp))
         GlideImage(
             modifier = Modifier.size(150.dp),
-            model = category[songIndex].coverUri,
+            model = selectedCategory.coverUri,
             contentDescription = "",
         )
-        Text(text = category[songIndex].name)
-        val songList = SongAdapter().getSongs(category[songIndex].songs)
+        Text(text = selectedCategory.name)
         LazyColumn {
-            items(category[songIndex].songs.size){ song ->
-                CategoryListItem(category[songIndex].songs[song])
+            items(category[songIndex].songs.size){song ->
+                CategoryListItem(categorySongs[song])
             }
         }
     }

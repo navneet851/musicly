@@ -41,6 +41,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.stream.musicly.dl.adapter.CategoryAdapter
+import com.android.stream.musicly.dl.adapter.SongAdapter
 import com.android.stream.musicly.dl.models.CategoryModel
 import com.android.stream.musicly.ui.theme.MusiclyTheme
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -51,30 +52,48 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val categoriesLiveData = CategoryAdapter().getCategories()
-        categoriesLiveData.observe(this) { categories ->
-            setContent {
-                MusiclyTheme {
-                    // A surface container using the 'background' color from th
-                    // e theme
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
+        val songLiveData = SongAdapter().getSongs()
 
-                        val navController = rememberNavController()
-                        NavHost(navController = navController, startDestination = "home"){
-                            composable("home"){
-                                HomeScreen(categories = categories, navController)
-                            }
-                            composable(
-                                route = "categorySongs/{songIndex}",
-                                arguments = listOf(
-                                    navArgument("songIndex"){
-                                        type = NavType.IntType
-                                    }
-                                )
-                            ){
-                                CategoryScreen(category = categories, it.arguments!!.getInt("songIndex"))
+
+//            if (song.){
+//                Log.d("livedata", "nullyyy")
+//            }
+//            else{
+//                Log.d("livedata", songLiveData.value!!.singer.toString())
+//            }
+
+
+        categoriesLiveData.observe(this) { categories ->
+            songLiveData.observe(this) { songs ->
+                //Log.d("livedata", songs[1].url.toString())
+                setContent {
+                    MusiclyTheme {
+                        // A surface container using the 'background' color from th
+                        // e theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+
+                            val navController = rememberNavController()
+                            NavHost(navController = navController, startDestination = "home") {
+                                composable("home") {
+                                    HomeScreen(categories = categories, navController)
+                                }
+                                composable(
+                                    route = "categorySongs/{songIndex}",
+                                    arguments = listOf(
+                                        navArgument("songIndex") {
+                                            type = NavType.IntType
+                                        }
+                                    )
+                                ) {
+                                    CategoryScreen(
+                                        songs = songs,
+                                        category = categories,
+                                        it.arguments!!.getInt("songIndex")
+                                    )
+                                }
                             }
                         }
                     }
@@ -82,7 +101,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 }
 
 
