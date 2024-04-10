@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -53,6 +55,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val categoriesLiveData = CategoryAdapter().getCategories()
         val songLiveData = SongAdapter().getSongs()
+
+
 
 
 //            if (song.){
@@ -74,6 +78,7 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
+                            val context = LocalContext.current
 
                             val navController = rememberNavController()
                             NavHost(navController = navController, startDestination = "home") {
@@ -91,8 +96,13 @@ class MainActivity : ComponentActivity() {
                                     CategoryScreen(
                                         songs = songs,
                                         category = categories,
+                                        context = context,
+                                        navController,
                                         it.arguments!!.getInt("songIndex")
                                     )
+                                }
+                                composable("player"){
+                                    PlayerScreen(context = context)
                                 }
                             }
                         }

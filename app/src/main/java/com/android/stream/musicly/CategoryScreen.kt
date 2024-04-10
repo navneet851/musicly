@@ -1,6 +1,8 @@
 package com.android.stream.musicly
 
+import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,9 +24,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.android.stream.musicly.dl.adapter.SongAdapter
 import com.android.stream.musicly.dl.models.CategoryModel
 import com.android.stream.musicly.dl.models.SongModel
+import com.android.stream.musicly.dl.models.songPlayer
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
@@ -32,7 +36,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CategoryScreen(songs : List<SongModel>, category : List<CategoryModel>, songIndex : Int) {
+fun CategoryScreen(songs : List<SongModel>, category : List<CategoryModel>, context: Context, navController: NavController, songIndex : Int) {
 
     val selectedCategory = category[songIndex]
     val categorySongs = songs.filter {
@@ -53,7 +57,7 @@ fun CategoryScreen(songs : List<SongModel>, category : List<CategoryModel>, song
         Text(text = selectedCategory.name)
         LazyColumn {
             items(category[songIndex].songs.size){song ->
-                CategoryListItem(categorySongs[song])
+                CategoryListItem(categorySongs[song], context, navController)
             }
         }
     }
@@ -62,7 +66,7 @@ fun CategoryScreen(songs : List<SongModel>, category : List<CategoryModel>, song
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CategoryListItem(categorySong : SongModel) {
+fun CategoryListItem(categorySong : SongModel, context: Context, navController: NavController) {
 
 
 
@@ -72,6 +76,10 @@ fun CategoryListItem(categorySong : SongModel) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp, 8.dp)
+            .clickable {
+                songPlayer.playSong(categorySong.url, context)
+                navController.navigate("player")
+            }
     ) {
 
         Row(

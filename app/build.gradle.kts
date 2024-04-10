@@ -72,7 +72,11 @@ dependencies {
     //glide
     implementation(libs.compose)
 
-    val nav_version = "2.7.7"
+    //navigation
+    implementation(libs.androidx.navigation.compose)
 
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    //exoplyer
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.dash)
+    implementation(libs.androidx.media3.ui)
 }
